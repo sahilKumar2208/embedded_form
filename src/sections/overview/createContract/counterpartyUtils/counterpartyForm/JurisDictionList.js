@@ -1,0 +1,15 @@
+export default [
+  "United States",
+  "Canada",
+  "New Zealand",
+  "United Kingdom",
+  "Australia",
+  "Singapore",
+  "India",
+  "Philippines",
+  "South Africa",
+  "Japan",
+  "China",
+  "France",
+  "Germany",
+];
