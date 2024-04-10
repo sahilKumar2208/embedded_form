@@ -9,6 +9,7 @@ const CounterPartyAdditionDrawer = ({
   setIsCounterPartyAdditionDrawerOpen,
   setCounterParties,
   counterParties,
+  attributeValueMap
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [typeOfCounterParty, setTypeOfCounterParty] = useState(null);
@@ -68,6 +69,7 @@ const CounterPartyAdditionDrawer = ({
           setCounterParties={setCounterParties}
           counterParties={counterParties}
           typeOfCounterParty={typeOfCounterParty}
+          attributeValueMap={attributeValueMap}
           setCurrentStep={setCurrentStep}
           onClose={onClose}
         />

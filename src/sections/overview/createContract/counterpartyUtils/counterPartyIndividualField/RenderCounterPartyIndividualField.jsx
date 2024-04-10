@@ -3,8 +3,8 @@ import { Card, Grid } from '@mui/material';
 import { RHFAutocomplete } from 'src/components/hook-form';
 import axiosInstance from 'src/utils/axios';
 import { useFormContext } from 'react-hook-form';
-// import { useSelector } from 'react-redux';
-import RenderCounterPartyInfo from './RenderCounterPartyIndividualInfo';
+
+import RenderCounterPartyInfo from './RenderCounterPartyIndividualInfo'
 import colorArray from 'src/utils/colorArray';
 import useClearFieldErrors from './useClearFieldErrors';
 import axios from 'axios';
@@ -14,13 +14,8 @@ function RenderCounterPartyIndividualField({
   control,
   fieldDetails,
   counterParties,
-  attributeValueMap,
 }) {
   const [counterparties, setCounterparties] = useState([]);
-
-  // const contract = useSelector((state) => state.contract);
-  // const { template } = contract;
-  // const { counterpartyIndividualMandatoryFields } = template;
   const { counterpartyIndividualMandatoryFields } = fieldDetails;
   const [fields, setFields] = useState([]);
 
@@ -31,7 +26,6 @@ function RenderCounterPartyIndividualField({
   } = useFormContext();
 
   useEffect(() => {
-    console.log('attribute value mapppp 1324 -->', attributeValueMap);
     const arr = [];
     for (let key in counterpartyIndividualMandatoryFields) {
       if (counterpartyIndividualMandatoryFields[key] && key !== '_id') {
@@ -59,14 +53,14 @@ function RenderCounterPartyIndividualField({
     // const cpartiesData = await axiosInstance.get(
     //   '/thirdPartyUsers/all/counterparties?type=IndependentIndividual'
     // );
-
+    console.log("yahan aaaaaaaaaaayyeeeeee");
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
       url: 'https://cmt-backend-playground.intellosync.com/api/v1/thirdPartyUsers/all/counterparties?type=IndependentIndividual',
       headers: {
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjUyMjk1MCwiZXhwIjoxNzEyNjA5MzUwfQ.sr7l5lR9KuKjsTPXQnLDOGkzYeEVnlmRtT0on9mJ7D8',
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjY0MTg4OSwiZXhwIjoxNzEyNzI4Mjg5fQ.fxw9gMP54KlR2V_Tc5gIPgr62-PgGh0dNUjO9Ld_WmA',
       },
     };
 
@@ -112,18 +106,17 @@ function RenderCounterPartyIndividualField({
     //   }}
     // >
     <Grid container>
-      <Grid item xs={12} sm={12} md={12}>
-        <RHFAutocomplete
-          name={`${fieldDetails.id}`}
-          label={`Choose counterparty(individual) *`}
-          options={counterparties}
-          getOptionLabel={(option) => option.fullName}
-          ChipProps={{ size: 'small' }}
-        />
+      <Grid xs={12} sm={12} md={12}>
+          <RHFAutocomplete
+            name={`${fieldDetails.id}`}
+            label={`Choose counterparty(individual) *`}
+            options={counterparties}
+            getOptionLabel={(option) => option.fullName}
+            ChipProps={{ size: 'small' }}
+          />
       </Grid>
       {watch(fieldDetails.id) &&
         fields.map((item) => {
-          console.log(item, 'itemmm');
           return <RenderCounterPartyInfo item={item} fieldDetails={fieldDetails} />;
         })}
     </Grid>

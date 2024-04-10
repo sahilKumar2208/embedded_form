@@ -7,6 +7,7 @@ import RenderCounterPartyOrgInfo from './RenderCounterPartyOrgInfo';
 import colorArray from 'src/utils/colorArray';
 import useClearFieldErrors from './useClearFieldErrors';
 import RenderCounterpartyOrgUi from './RenderCounterpartyOrgUi';
+import axios from 'axios';
 
 function RenderCounterPartyOrgField({
   otherPartyMode,
@@ -44,23 +45,43 @@ function RenderCounterPartyOrgField({
     }
   }, [watch(fieldDetails.id)]);
 
+
+  console.log("pooraaa watch", watch());
+
   const fetchCounterparties = async () => {
-    const cpartiesData = await axiosInstance.get(
-      '/thirdPartyUsers/all/counterparties?type=Organization'
-    );
+    // const cpartiesData = await axiosInstance.get(
+    //   '/thirdPartyUsers/all/counterparties?type=Organization'
+    // );
 
-    setCounterparties(
-      cpartiesData.data.map((res) => {
-        return {
-          companyAddress: res.companyAddress,
-          registeredName: res.registeredName,
-          jurisdiction: res.jurisdiction,
-          orgId: res._id,
-        };
-      })
-    );
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: 'https://cmt-backend-playground.intellosync.com/api/v1/thirdPartyUsers/all/counterparties?type=Organization',
+      headers: {
+        Authorization:
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjY0MTg4OSwiZXhwIjoxNzEyNzI4Mjg5fQ.fxw9gMP54KlR2V_Tc5gIPgr62-PgGh0dNUjO9Ld_WmA',
+      },
+    };
+
+    try {
+      const cpartiesData = await axios.request(config);
+      console.log('get org counterparties ', cpartiesData.data);
+      setCounterparties(
+        cpartiesData?.data.map((res) => {
+          return {
+            companyAddress: res.companyAddress,
+            registeredName: res.registeredName,
+            jurisdiction: res.jurisdiction,
+            orgId: res._id,
+          };
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      throw new Error('Failed to fetch counterparties');
+    }
   };
-
+  console.log("field details wala id in org", watch(fieldDetails.id));
   // counterParties checks wheather the contract party is changed or not
   useEffect(() => {
     fetchCounterparties();

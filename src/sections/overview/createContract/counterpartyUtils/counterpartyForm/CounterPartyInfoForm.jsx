@@ -8,6 +8,7 @@ const CounterPartyInfoForm = ({
   setCurrentStep,
   setCounterParties,
   counterParties,
+  attributeValueMap,
   onClose,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,6 +19,7 @@ const CounterPartyInfoForm = ({
           setCurrentStep={setCurrentStep}
           setCounterParties={setCounterParties}
           counterParties={counterParties}
+          attributeValueMap={attributeValueMap}
           onClose={onClose}
           isSubmitting={isSubmitting}
           setIsSubmitting={setIsSubmitting}
@@ -27,6 +29,7 @@ const CounterPartyInfoForm = ({
           setCurrentStep={setCurrentStep}
           setCounterParties={setCounterParties}
           counterParties={counterParties}
+          attributeValueMap={attributeValueMap}
           onClose={onClose}
           isSubmitting={isSubmitting}
           setIsSubmitting={setIsSubmitting}

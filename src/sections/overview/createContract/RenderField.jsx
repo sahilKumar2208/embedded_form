@@ -19,21 +19,23 @@ export default function RenderField({
   counterParties,
   attributeValueMap,
 }) {
+  console.log("kkkkkkkkkk", fieldDetails);
   if (fieldDetails.value == null) {
     fieldDetails.value = '';
   }
-  // if (fieldDetails.type === 'counterpartyOrg') {
-  //   return (
-  //     <RenderCounterPartyOrgField
-  //       counterParties={counterParties}
-  //       otherPartyMode={otherPartyMode}
-  //       fieldDetails={fieldDetails}
-  //       control={control}
-  //     />
-  //   );
-  // }
+  if (fieldDetails.type === 'counterpartyOrg') {
+    return (
+      <RenderCounterPartyOrgField
+        counterParties={counterParties}
+        otherPartyMode={otherPartyMode}
+        fieldDetails={fieldDetails}
+        control={control}
+      />
+    );
+  }
 
   if (fieldDetails.type === 'counterpartyOrgPerson') {
+    console.log("loggggggggg", fieldDetails)
     return (
       <RenderCounterPartyOrgPersonField
         counterParties={counterParties}
@@ -120,6 +122,7 @@ export default function RenderField({
     fieldDetails.type === 'entity' ||
     fieldDetails.type === 'entitySignatoryPerson'
   ) {
+    console.log("fildddd", fieldDetails.id);
     return (
       <RenderInputField
         otherPartyMode={otherPartyMode}

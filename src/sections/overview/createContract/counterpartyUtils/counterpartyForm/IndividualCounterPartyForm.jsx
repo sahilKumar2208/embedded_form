@@ -18,12 +18,14 @@ import Iconify from 'src/components/iconify/Iconify';
 import axiosInstance from 'src/utils/axios';
 import { useSnackbar } from 'src/components/snackbar';
 import RenderAddressFields from '../../rendertypeOfFieldUtils/RenderAddressFields';
+import axios from 'axios';
 
 const IndividualCounterPartyForm = ({
   setCurrentStep,
   isComingFromOrgPage,
   setCounterPartyIndividualsOfOrg,
   counterPartyIndividualsOfOrg,
+  attributeValueMap,
   orgId,
   setAddPOC,
   counterParties,
@@ -44,6 +46,7 @@ const IndividualCounterPartyForm = ({
 
   const methods = useForm({
     resolver: yupResolver(schema),
+    defaultValues: attributeValueMap,
   });
 
   const { watch, setValue } = methods;
@@ -86,34 +89,80 @@ const IndividualCounterPartyForm = ({
     } else {
       // add counter party api call
 
+      const createCounterParty = (postData, onSuccess, onError) => {
+        setIsSubmitting(true);
+        axios
+          .post('https://cmt-backend-playground.intellosync.com/api/v1/thirdPartyUsers', postData, {
+            headers: {
+              Authorization:
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjY0MTg4OSwiZXhwIjoxNzEyNzI4Mjg5fQ.fxw9gMP54KlR2V_Tc5gIPgr62-PgGh0dNUjO9Ld_WmA',
+            },
+          })
+          .then((res) => {
+            enqueueSnackbar('Counter Party created Successfully', { variant: 'success' });
+            onSuccess(res.data);
+          })
+          .catch((err) => {
+            enqueueSnackbar('Some error occured', { variant: 'error' });
+            onError(err);
+          })
+          .finally(() => {
+            setIsSubmitting(false);
+          });
+      };
+
       if (isComingFromOrgPage) {
-        setIsSubmitting(true);
-        axiosInstance
-          .post('/thirdPartyUsers', { ...data, counterpartyType: 'Individual', orgId: orgId })
-          .then((res) => {
-            enqueueSnackbar('Counter Party created Successfully', { variant: 'success' });
-            setCounterPartyIndividualsOfOrg([...counterPartyIndividualsOfOrg, res.data]);
+        createCounterParty(
+          { ...data, counterpartyType: 'Individual', orgId: orgId },
+          (responseData) => {
+            setCounterPartyIndividualsOfOrg([...counterPartyIndividualsOfOrg, responseData]);
             setAddPOC(0);
-          })
-          .catch((err) => {
-            enqueueSnackbar('Some error occured', { variant: 'error' });
+          },
+          () => {
             setIsSubmitting(false);
-          });
+          }
+        );
       } else {
-        setIsSubmitting(true);
-        axiosInstance
-          .post('/thirdPartyUsers', { ...data, counterpartyType: 'Individual' })
-          .then((res) => {
-            enqueueSnackbar('Counter Party created Successfully', { variant: 'success' });
-            setCounterParties([...counterParties, res.data]);
+        createCounterParty(
+          { ...data, counterpartyType: 'Individual' },
+          (responseData) => {
+            setCounterParties([...counterParties, responseData]);
             onClose();
+          },
+          () => {
             setIsSubmitting(false);
-          })
-          .catch((err) => {
-            enqueueSnackbar('Some error occured', { variant: 'error' });
-            setIsSubmitting(false);
-          });
+          }
+        );
       }
+
+      // if (isComingFromOrgPage) {
+      //   setIsSubmitting(true);
+      //   axiosInstance
+      //     .post('/thirdPartyUsers', { ...data, counterpartyType: 'Individual', orgId: orgId })
+      //     .then((res) => {
+      //       enqueueSnackbar('Counter Party created Successfully', { variant: 'success' });
+      //       setCounterPartyIndividualsOfOrg([...counterPartyIndividualsOfOrg, res.data]);
+      //       setAddPOC(0);
+      //     })
+      //     .catch((err) => {
+      //       enqueueSnackbar('Some error occured', { variant: 'error' });
+      //       setIsSubmitting(false);
+      //     });
+      // } else {
+      //   setIsSubmitting(true);
+      //   axiosInstance
+      //     .post('/thirdPartyUsers', { ...data, counterpartyType: 'Individual' })
+      //     .then((res) => {
+      //       enqueueSnackbar('Counter Party created Successfully', { variant: 'success' });
+      //       setCounterParties([...counterParties, res.data]);
+      //       onClose();
+      //       setIsSubmitting(false);
+      //     })
+      //     .catch((err) => {
+      //       enqueueSnackbar('Some error occured', { variant: 'error' });
+      //       setIsSubmitting(false);
+      //     });
+      // }
     }
   };
 

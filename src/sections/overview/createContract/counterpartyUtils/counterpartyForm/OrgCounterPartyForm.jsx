@@ -27,6 +27,7 @@ const OrgCounterPartyForm = ({
   counterParties,
   onClose,
   isSubmitting,
+  attributeValueMap,
   setIsSubmitting,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -53,6 +54,7 @@ const OrgCounterPartyForm = ({
 
   const methods = useForm({
     resolver: yupResolver(schema),
+    defaultValues: attributeValueMap
   });
 
   const { watch, setValue } = methods;

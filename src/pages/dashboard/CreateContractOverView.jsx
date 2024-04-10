@@ -1,5 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { CreateContract } from 'src/sections/overview/createContract/CreateContract';
+import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -7,10 +10,11 @@ export default function CreateContractOverView() {
   const { launchId } = useParams();
   const [templateFields, setTemplateFields] = useState(null);
   const [templateVersionWarningFlag, setTemplateVersionWarningFlag] = useState(false);
-  const [attributeValueMap, setAttributeValueMap] = useState({});
+  const [attributeValueMap, setAttributeValueMap] = useState(null);
   const [isCounterPartyAdditionDrawerOpen, setIsCounterPartyAdditionDrawerOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [counterParties, setCounterParties] = useState([]);
+  const [template, setTemplate] = useState(null);
 
   // function to fetch the template fields
   async function fetchTemplateFields(templateId) {
@@ -21,24 +25,27 @@ export default function CreateContractOverView() {
         {
           headers: {
             Authorization:
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjUyMjk1MCwiZXhwIjoxNzEyNjA5MzUwfQ.sr7l5lR9KuKjsTPXQnLDOGkzYeEVnlmRtT0on9mJ7D8',
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjY0MTg4OSwiZXhwIjoxNzEyNzI4Mjg5fQ.fxw9gMP54KlR2V_Tc5gIPgr62-PgGh0dNUjO9Ld_WmA',
           },
         }
       );
       const templateDetails = response.data.data;
+      setTemplate(templateDetails);
+
+      return templateDetails.templateFields;
 
       // Extract ID, type, and optionally isMandatory for counterpartyIndividual fields
-      const fieldDetails = templateDetails.templateFields.map((field) => {
-        const fieldInfo = {
-          id: field.id,
-          type: field.type,
-          label: field.label,
-        };
+      // const fieldDetails = templateDetails.templateFields.map((field) => {
+      //   const fieldInfo = {
+      //     id: field.id,
+      //     type: field.type,
+      //     label: field.label,
+      //   };
 
-        return fieldInfo;
-      });
+      //   return fieldInfo;
+      // });
 
-      return fieldDetails;
+      // return fieldDetails;
     } catch (error) {
       console.error('Error fetching template fields:', error);
       throw new Error('Failed to fetch template fields');
@@ -53,7 +60,7 @@ export default function CreateContractOverView() {
       url: 'https://cmt-backend-playground.intellosync.com/api/v1/thirdPartyUsers/all/counterparties?type=IndependentIndividual',
       headers: {
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjUyMjk1MCwiZXhwIjoxNzEyNjA5MzUwfQ.sr7l5lR9KuKjsTPXQnLDOGkzYeEVnlmRtT0on9mJ7D8',
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjY0MTg4OSwiZXhwIjoxNzEyNzI4Mjg5fQ.fxw9gMP54KlR2V_Tc5gIPgr62-PgGh0dNUjO9Ld_WmA',
       },
     };
 
@@ -116,12 +123,21 @@ export default function CreateContractOverView() {
     fetchData();
   }, []);
 
+  console.log(templateFields, 'templateFields');
   return (
     <>
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
-      <CreateContract attributeValueMap={attributeValueMap} counterParties={counterParties} />
+      {attributeValueMap && (
+        <CreateContract
+          attributeValueMap={attributeValueMap}
+          counterParties={counterParties}
+          templateFields={templateFields}
+          setCounterParties={setCounterParties}
+          template={template}
+        />
+      )}
     </>
   );
 }

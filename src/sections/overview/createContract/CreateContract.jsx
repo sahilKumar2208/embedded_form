@@ -9,157 +9,65 @@ import { useParams } from 'react-router-dom';
 import { CompressOutlined } from '@mui/icons-material';
 import CounterPartyAdditionDrawer from './counterpartyUtils/counterpartyForm/CounterPartyAdditionDrawer';
 import RenderField from './RenderField';
+import { LoadingScreen } from 'src/components/loading-screen';
 
-export const CreateContract = ({ attributeValueMap, counterParties}) => {
-  
-  const { enqueueSnackbar } = useSnackbar();
-  // const { launchId } = useParams();
-  // const [templateFields, setTemplateFields] = useState(null);
+export const CreateContract = ({
+  attributeValueMap,
+  counterParties,
+  setCounterParties,
+  templateFields,
+  template,
+}) => {
   const [templateVersionWarningFlag, setTemplateVersionWarningFlag] = useState(false);
-  // const [attributeValueMap, setAttributeValueMap] = useState({});
   const [isCounterPartyAdditionDrawerOpen, setIsCounterPartyAdditionDrawerOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
-  // const [counterParties, setCounterParties] = useState([]);
-  
 
+  const obj = { addressFieldd: { city: 'vaaaaaaa' }, 'addressFieldd.country': 'ttt' };
+  console.log(attributeValueMap, 'attribute value map qwerty');
 
-  // console.log('launchId ----->', launchId);
+  const methods = useForm({
+    defaultValues: attributeValueMap,
+  });
 
-  // // function to fetch the template fields
-  // async function fetchTemplateFields(templateId) {
-  //   try {
-  //     const response = await axios.get(
-  //       `https://cmt-backend-playground.intellosync.com/api/v1/templates/${templateId}`,
-  //       // `https://cmt-backend-playground.intellosync.com/api/v1/templates/${templateId}`,
-  //       {
-  //         headers: {
-  //           Authorization:
-  //             'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjUyMjk1MCwiZXhwIjoxNzEyNjA5MzUwfQ.sr7l5lR9KuKjsTPXQnLDOGkzYeEVnlmRtT0on9mJ7D8',
-  //         },
-  //       }
-  //     );
-  //     const templateDetails = response.data.data;
+  const { setValue, watch, reset } = methods;
 
-  //     // Extract ID, type, and optionally isMandatory for counterpartyIndividual fields
-  //     const fieldDetails = templateDetails.templateFields.map((field) => {
-  //       const fieldInfo = {
-  //         id: field.id,
-  //         type: field.type,
-  //         label: field.label,
-  //       };
+  console.log('wwwwwwwwwww', watch());
 
-  //       return fieldInfo;
-  //     });
+  //ye function call hoga on submit
+  const onSubmit = async (data) => {
+    // console.log('data on submit', data);
+    let contract = {};
+    // let flattenedData = Object.assign({}, ...Object.values(data));
+    // console.log("fllllattttt", flattenedData);
+    contract.contractFields = { ...data };
 
-  //     return fieldDetails;
-  //   } catch (error) {
-  //     console.error('Error fetching template fields:', error);
-  //     throw new Error('Failed to fetch template fields');
-  //   }
-  // }
+    console.log('nnnnnnnnnnnnnnnnnnnnaaaaaaaaaaaaaa', template);
+    contract.name = template.name;
+    contract.searchTags = template.searchTags;
+    contract.templateId = template._id;
+    contract.templateVersion = template.version;
 
-  // // if type === counterparties wala
-  // async function fetchCounterparties() {
-  //   let config = {
-  //     method: 'get',
-  //     maxBodyLength: Infinity,
-  //     url: 'https://cmt-backend-playground.intellosync.com/api/v1/thirdPartyUsers/all/counterparties?type=IndependentIndividual',
-  //     headers: {
-  //       Authorization:
-  //         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjUyMjk1MCwiZXhwIjoxNzEyNjA5MzUwfQ.sr7l5lR9KuKjsTPXQnLDOGkzYeEVnlmRtT0on9mJ7D8',
-  //     },
-  //   };
+    console.log(contract, 'contttttt');
 
-  //   try {
-  //     const response = await axios.request(config);
-  //     console.log('get counterparties 111111 ', response.data);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.log(error);
-  //     throw new Error('Failed to fetch counterparties');
-  //   }
-  // }
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'https://cmt-backend-playground.intellosync.com/api/v1/contracts',
+      headers: {
+        Authorization:
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjY0MTg4OSwiZXhwIjoxNzEyNzI4Mjg5fQ.fxw9gMP54KlR2V_Tc5gIPgr62-PgGh0dNUjO9Ld_WmA',
+      },
+      data: contract,
+    };
 
-  // const fetchLaunchForm = async () => {
-  //   try {
-  //     const fetchLaunchFormResponse = await axios.get(
-  //       `http://localhost:3015/api/v1/launchForm/${launchId}`
-  //     );
-
-  //     console.log(fetchLaunchFormResponse, 'fetchLaunchFormResponse');
-  //     return fetchLaunchFormResponse.data;
-  //   } catch (error) {
-  //     console.log('error in fetching launch form from the function', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const getLaunchForm = async () => {
-  //       try {
-  //         const launchForm = await fetchLaunchForm(launchId);
-  //         console.log("launchForm details --->", launchForm);
-  //         const templateId = launchForm.templateId;
-  //         const contractFields = launchForm.contractFields;
-  //         setAttributeValueMap(contractFields);
-  //         console.log("Attribute value map ----->", attributeValueMap );
-  //         const templateFieldDetails = await fetchTemplateFields(templateId);
-  //         setTemplateFields(templateFieldDetails);
-  //       } catch (error) {
-  //         console.log('Error in getting launch form', error);
-  //       }
-  //     };
-
-  //     getLaunchForm();
-
-  //     const getCounterparties = async () => {
-  //       try {
-  //         const counterparties = await fetchCounterparties();
-  //         console.log('counterparties wala data iss --->', counterparties);
-  //         setCounterParties(counterparties);
-  //         console.log('capital wala counterparty --->', counterParties);
-  //       } catch (error) {
-  //         console.log('error in fetching counter parties', error);
-  //       }
-  //     };
-  //     getCounterparties();
-  //   };
-
-  //   // Call the fetchData function
-  //   fetchData();
-  // }, []);
-  // const methods = useForm({
-  //   defaultValues: attributeValueMap,
-  // });
-  // console.log(attributeValueMap, 'attrvalue map')
-  // const { setValue, watch, reset } = methods;
-
-  // //ye function call hoga on submit
-  // const onSubmit = async (data) => {
-  //   console.log('Hello from create org', data);
-
-  //   try {
-  //     const formatData = {
-  //       ...data,
-  //       features: {
-  //         editor: data.editor,
-  //         esign: data.esign,
-  //         aiAssist: data.aiAssist,
-  //       },
-  //     };
-
-  //     delete formatData.editor;
-  //     delete formatData.esign;
-  //     delete formatData.aiAssist;
-
-  //     const response = await axiosInstance.post('/v1/support/org', formatData, {});
-  //     console.log('response on creating data', response);
-  //     reset();
-  //     enqueueSnackbar('Org created has been updated!!');
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+    axios(config)
+      .then((response) => {
+        console.log('Response:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
 
   const openFieldsAsDrawer = (e) => {
     e.preventDefault();
@@ -265,7 +173,7 @@ export const CreateContract = ({ attributeValueMap, counterParties}) => {
           <Grid item sx={{ p: 2 }} xs={12} sm={12} md={12}>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button type="submit" variant="contained">
-                Save Changes
+                Create contract
               </Button>
             </Box>
           </Grid>
