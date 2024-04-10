@@ -1,15 +1,26 @@
-import { Divider, Grid, Typography, Box, Button, Tooltip } from '@mui/material';
+import {
+  Divider,
+  Grid,
+  Typography,
+  Box,
+  Button,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { useSnackbar } from 'src/components/snackbar';
 import FormProvider from 'src/components/hook-form/form-provider';
 import React, { useEffect, useState } from 'react';
 import axiosInstance from 'src/utils/axios';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CompressOutlined } from '@mui/icons-material';
 import CounterPartyAdditionDrawer from './counterpartyUtils/counterpartyForm/CounterPartyAdditionDrawer';
 import RenderField from './RenderField';
-import { LoadingScreen } from 'src/components/loading-screen';
+import { LoadingScreen, SplashScreen } from 'src/components/loading-screen';
+import { useSnackbar } from 'src/components/snackbar';
 
 export const CreateContract = ({
   attributeValueMap,
@@ -21,7 +32,10 @@ export const CreateContract = ({
   const [templateVersionWarningFlag, setTemplateVersionWarningFlag] = useState(false);
   const [isCounterPartyAdditionDrawerOpen, setIsCounterPartyAdditionDrawerOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
-
+  const [openDialogue, setOpenDialogue] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const obj = { addressFieldd: { city: 'vaaaaaaa' }, 'addressFieldd.country': 'ttt' };
   console.log(attributeValueMap, 'attribute value map qwerty');
 
@@ -35,6 +49,7 @@ export const CreateContract = ({
 
   //ye function call hoga on submit
   const onSubmit = async (data) => {
+    setLoading(true);
     // console.log('data on submit', data);
     let contract = {};
     // let flattenedData = Object.assign({}, ...Object.values(data));
@@ -55,18 +70,27 @@ export const CreateContract = ({
       url: 'https://cmt-backend-playground.intellosync.com/api/v1/contracts',
       headers: {
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjY0MTg4OSwiZXhwIjoxNzEyNzI4Mjg5fQ.fxw9gMP54KlR2V_Tc5gIPgr62-PgGh0dNUjO9Ld_WmA',
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjcyODU3NCwiZXhwIjoxNzEyODE0OTc0fQ.KrAQecvAvRHPStBRJSxBe2_f_TGK6mMAYgEn_CBTYqk',
       },
       data: contract,
     };
 
-    axios(config)
-      .then((response) => {
-        console.log('Response:', response.data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+    try {
+      // enqueueSnackbar('Your contract is being created, it may take few seconds...', {
+      //   variant: 'info',
+      // });
+      const contractReesponse = await axios(config);
+      // enqueueSnackbar('Contract successfully created', { variant: 'success' });
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    // axios(config)
+    //   .then((response) => {
+    //     console.log('Response:', response.data);
+    //   })
+    //   .catch((error) => {});
+    setLoading(false);
+    setOpenDialogue(true);
   };
 
   const openFieldsAsDrawer = (e) => {
@@ -78,10 +102,26 @@ export const CreateContract = ({
     setOpenDrawer(false);
   };
 
+  const handleClose = () => {
+    // navigate(-1);
+    setOpenDialogue(false);
+  };
+
   console.log(watch(), 'formValues');
+
+  if (loading) return <SplashScreen />;
 
   return (
     <div>
+      <Dialog sx={{ padding: 2 }} open={openDialogue} onClose={handleClose}>
+        <DialogTitle>Congrats!</DialogTitle>
+        <DialogContent>Your contract has been created.</DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleClose}>
+            Got it.
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Grid xs={12} s={12} md={12} variant="contained" sx={{ textAlign: 'right' }}>
         {templateFields &&
           templateFields.filter(
@@ -106,14 +146,15 @@ export const CreateContract = ({
       </Grid>
 
       <FormProvider methods={methods} onSubmit={methods.handleSubmit(onSubmit)}>
-        <Grid container spacing={1}>
-          <Grid item xs={12} sm={12} md={10}>
+        <Grid container spacing={2}>
+          {/* <Grid item xs={12} sm={12} md={10}>
             <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
               Create contract
             </Typography>
-            {/* <br /> */}
+            <br />
             <Divider variant="middle" />
-          </Grid>
+          </Grid> */}
+          <Grid item xs={12} sm={12} md={10}></Grid>
           <Grid item xs={12} sm={12} md={2}>
             {templateFields &&
               templateFields.filter(
@@ -122,13 +163,15 @@ export const CreateContract = ({
                   res.type === 'counterpartyOrgPerson' ||
                   res.type === 'counterpartyIndividual'
               ).length !== 0 && (
-                <Button
-                  sx={{ ml: 1 }}
-                  variant="contained"
-                  onClick={(e) => setIsCounterPartyAdditionDrawerOpen(true)}
-                >
-                  Add Counterparty
-                </Button>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button
+                    sx={{ ml: 1 }}
+                    variant="outlined"
+                    onClick={(e) => setIsCounterPartyAdditionDrawerOpen(true)}
+                  >
+                    Add Counterparty
+                  </Button>
+                </Box>
               )}
           </Grid>
           <Grid item xs={12} sm={12} md={12}></Grid>
@@ -171,7 +214,7 @@ export const CreateContract = ({
           })}
           {/* <OrgForm /> */}
           <Grid item sx={{ p: 2 }} xs={12} sm={12} md={12}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button type="submit" variant="contained">
                 Create contract
               </Button>

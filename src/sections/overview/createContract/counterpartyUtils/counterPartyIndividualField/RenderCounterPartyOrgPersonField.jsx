@@ -58,10 +58,12 @@ function RenderCounterPartyOrgPersonField({
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `https://cmt-backend-playground.intellosync.com/api/v1/thirdPartyUsers/pocsBasedOnRegisteredName/${watch(fieldDetails.counterpartyOrgFieldId).registeredName}`,
+      url: `https://cmt-backend-playground.intellosync.com/api/v1/thirdPartyUsers/pocsBasedOnRegisteredName/${
+        watch(fieldDetails.counterpartyOrgFieldId).registeredName
+      }`,
       headers: {
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjY0MTg4OSwiZXhwIjoxNzEyNzI4Mjg5fQ.fxw9gMP54KlR2V_Tc5gIPgr62-PgGh0dNUjO9Ld_WmA',
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjcyODU3NCwiZXhwIjoxNzEyODE0OTc0fQ.KrAQecvAvRHPStBRJSxBe2_f_TGK6mMAYgEn_CBTYqk',
       },
     };
 
