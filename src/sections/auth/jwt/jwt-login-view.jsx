@@ -32,6 +32,7 @@ import axios from '../../../utils/axios';
 
 export default function JwtLoginView() {
   const { login } = useAuthContext();
+  console.log(login,"Heylogin")
   const [otpSent, setOtpSent] = useState(false);
   const [sendOtp, setSendOtp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -106,7 +107,10 @@ export default function JwtLoginView() {
       setOtpSent(false);
       console.log(email, 'email');
       try {
-        await axios.post('/v1/support/login/getOtp', { email });
+        await axios.post(
+          'https://cmt-backend-playground.intellosync.com/api/v1/users/getLoginOtp',
+          { email }
+        );
       } catch (e) {
         console.log(e, 'dkjfkdjkfjdk');
       }

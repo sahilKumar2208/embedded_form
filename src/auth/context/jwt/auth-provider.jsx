@@ -215,7 +215,10 @@ export function AuthProvider({ children }) {
 
     console.log('login data get', data);
 
-    const response = await axios.post('/v1/support/login/otp', data);
+    const response = await axios.post(
+      'https://cmt-backend-playground.intellosync.com/api/v1/users/login/otp',
+      data
+    );
 
     const { accessToken, user } = response.data['data'];
 

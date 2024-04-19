@@ -3,6 +3,8 @@ import { CreateContract } from 'src/sections/overview/createContract/CreateContr
 import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Step, Stepper, StepLabel } from '@mui/material';
+import ContractBasicInfo from 'src/sections/overview/createContract/ContractBasicInfo';
 
 // ----------------------------------------------------------------------
 
@@ -15,6 +17,8 @@ export default function CreateContractOverView() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [counterParties, setCounterParties] = useState([]);
   const [template, setTemplate] = useState(null);
+  const [activeStep, setActiveStep] = useState(0);
+  const [orgFeatures, setOrgFeatures] = useState(null);
 
   // function to fetch the template fields
   async function fetchTemplateFields(templateId) {
@@ -25,7 +29,7 @@ export default function CreateContractOverView() {
         {
           headers: {
             Authorization:
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjcyODU3NCwiZXhwIjoxNzEyODE0OTc0fQ.KrAQecvAvRHPStBRJSxBe2_f_TGK6mMAYgEn_CBTYqk',
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMzUwNzAwNywiZXhwIjoxNzEzNTkzNDA3fQ.2pCtPkvoM2QKms3IDV0hdiqK95weWHzUxAXkLpdJ5H0',
           },
         }
       );
@@ -60,7 +64,7 @@ export default function CreateContractOverView() {
       url: 'https://cmt-backend-playground.intellosync.com/api/v1/thirdPartyUsers/all/counterparties?type=IndependentIndividual',
       headers: {
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMjcyODU3NCwiZXhwIjoxNzEyODE0OTc0fQ.KrAQecvAvRHPStBRJSxBe2_f_TGK6mMAYgEn_CBTYqk',
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMzUwNzAwNywiZXhwIjoxNzEzNTkzNDA3fQ.2pCtPkvoM2QKms3IDV0hdiqK95weWHzUxAXkLpdJ5H0',
       },
     };
 
@@ -77,13 +81,38 @@ export default function CreateContractOverView() {
   const fetchLaunchForm = async () => {
     try {
       const fetchLaunchFormResponse = await axios.get(
-        `http://localhost:3015/api/v1/launchForm/${launchId}`
+        `http://localhost:3015/api/v1/launchForm/${launchId}`,
+        {
+          headers: {
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMzUwNzAwNywiZXhwIjoxNzEzNTkzNDA3fQ.2pCtPkvoM2QKms3IDV0hdiqK95weWHzUxAXkLpdJ5H0',
+          },
+        }
       );
 
       console.log(fetchLaunchFormResponse, 'fetchLaunchFormResponse');
       return fetchLaunchFormResponse.data;
     } catch (error) {
       console.log('error in fetching launch form from the function', error);
+    }
+  };
+
+  const fetchOrgFeatures = async () => {
+    try {
+      const fetchOrgFeaturesResponse = await axios.get(
+        'https://cmt-backend-playground.intellosync.com/api/v1/org/featureFlags',
+        {
+          headers: {
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWU3ZjQ4MDI5Y2FhYjdlNGM4OGMyNDkiLCJmdWxsTmFtZSI6IlNhaGlsIEt1bWFyIiwiZW1haWwiOiJzYWhpbC5rdW1hckBpbnRlbGxvc3luYy5jb20iLCJvcmdJZCI6IjY1ZTdlNWY3MmU3Y2QzNGMzY2EyNTk2NCIsInJvbGUiOiJhZG1pbiIsImVkaXRvckFjY2VzcyI6IndyaXRlciIsImVudmlyb25tZW50IjoicGxheWdyb3VuZCIsImlhdCI6MTcxMzUwNzAwNywiZXhwIjoxNzEzNTkzNDA3fQ.2pCtPkvoM2QKms3IDV0hdiqK95weWHzUxAXkLpdJ5H0',
+          },
+        }
+      );
+
+      console.log('org features response --->', fetchOrgFeaturesResponse);
+      return fetchOrgFeaturesResponse;
+    } catch (error) {
+      console.log('error in fetching orgFeatures');
     }
   };
 
@@ -117,6 +146,17 @@ export default function CreateContractOverView() {
         }
       };
       getCounterparties();
+
+      const getOrgFeatures = async () => {
+        try {
+          const retrievedOrgFeatures = await fetchOrgFeatures();
+          console.log('org features --->', retrievedOrgFeatures);
+          setOrgFeatures(retrievedOrgFeatures.data);
+        } catch (error) {
+          console.log('error in getting orgFeatures', error);
+        }
+      };
+      getOrgFeatures();
     };
 
     // Call the fetchData function
@@ -124,18 +164,41 @@ export default function CreateContractOverView() {
   }, []);
 
   console.log(templateFields, 'templateFields');
+
+  const handleNext = () => {
+    if (activeStep < 1) setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    console.log('handle back was called !!!');
+    if (activeStep > 0) setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
   return (
     <>
       <Helmet>
         <title>Create Contract-Intellosync</title>
       </Helmet>
-      {attributeValueMap && (
+      <Stepper activeStep={activeStep} alternativeLabel>
+        <Step>
+          <StepLabel>Contract Info</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Contract Details</StepLabel>
+        </Step>
+      </Stepper>
+      {activeStep === 0 && orgFeatures && (
+        <ContractBasicInfo orgFeatures={orgFeatures} template={template} onNext={handleNext} />
+      )}
+      {activeStep === 1 && (
         <CreateContract
           attributeValueMap={attributeValueMap}
           counterParties={counterParties}
           templateFields={templateFields}
           setCounterParties={setCounterParties}
           template={template}
+          orgFeatures={orgFeatures}
+          onBack={handleBack}
         />
       )}
     </>

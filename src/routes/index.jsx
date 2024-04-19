@@ -15,6 +15,7 @@ import { ContractType } from 'src/sections/overview/app/RenderOrganization/Actio
 import AddOrgUsers from 'src/pages/dashboard/CreateTrialAccounts';
 import CreateTrialAccounts from 'src/pages/dashboard/CreateTrialAccounts';
 import CreateContractOverView from 'src/pages/dashboard/CreateContractOverView';
+import LoginSuccessPage from 'src/pages/dashboard/LoginSuccessPage';
 
 // ----------------------------------------------------------------------
 
@@ -48,6 +49,7 @@ export default function Router() {
         <DashboardLayout />
       ),
       children: [
+        { path: '/', element: <LoginSuccessPage /> },
         { path: '/:orgId/launch/:launchId', element: <CreateContractOverView /> },
         { path: '/create-contract', element: <CreateContractOverView /> },
         // { path: '/', element: <OverviewAppPage /> },
